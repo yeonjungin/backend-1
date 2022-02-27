@@ -376,10 +376,12 @@ PATCH : /guestbook/{guestbookId}
 
 #### 4.3.2. Request
 
+
 | Parameter   |   Type   | Description |
 |-------------|:--------:|-------------|
 | guestbookId |  Number  | 방명록 id      |
 | contents    |  String  | 방명록 내용      |
+
 
 #### 4.3.3. Response
 없음
@@ -412,6 +414,7 @@ DELETE : /guestbook/{guestbookId}
 ### 4.5. 방명록 댓글 신규 등록 (방명록 주인만 (받은 사람) 가능) 
 #### 4.5.1. Url
 POST : /guestbook/comment/{guestbookId}
+
 
 #### 4.5.2. Request
 
