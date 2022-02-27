@@ -5,7 +5,6 @@
 ### 1.1. 
 
 ## 2. ARTICLE
-
 ### 2.1. 답글 조회
 #### 2.1.1. GET /answers/list/{userId}
 #### 2.1.2. Request
