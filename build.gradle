@@ -18,7 +18,7 @@ dependencies {
 	// JPA - MySQL 연동
    implementation 'mysql:mysql-connector-java'
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-   compile 'mysql:mysql-connector-java'
+   implementation 'mysql:mysql-connector-java'
 }
 
 tasks.named('test') {
