@@ -131,7 +131,7 @@ PATCH :/users/{userId}/{profile}
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
-| profile | Boolean | 프로필 사진 저장 경로 |
+| profile | String | 프로필 사진 저장 경로 |
 
 #### 1.7.3. Response
 없음
