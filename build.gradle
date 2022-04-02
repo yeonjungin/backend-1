@@ -13,12 +13,33 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
+	// NOTE : jwt 토큰
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	// JPA - MySQL 연동
+
+	// NOTE : Springboot Security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// NOTE : Unit TEST
+	implementation 'junit:junit:4.13.2'
+	implementation 'com.h2database:h2'
+
+	// NOTE : 회원가입 중복 확인
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// NOTE : lombok 설정
+	compileOnly 'org.projectlombok:lombok'
+	testImplementation 'org.projectlombok:lombok'
+	annotationProcessor('org.projectlombok:lombok')
+	testAnnotationProcessor('org.projectlombok:lombok')
+	// NOTE : JPA - MySQL 연동
    implementation 'mysql:mysql-connector-java'
    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-   implementation 'mysql:mysql-connector-java'
+	// NOTE : redis 설정값
+	implementation "org.springframework.boot:spring-boot-starter-data-redis"
 }
 
 tasks.named('test') {
