@@ -20,6 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 @Component
 // NOTE : JWT를 생성하고 검증하는 컴포넌트
+// NOTE : JWT를 생성하고 검증하는 컴포넌트
 public class JwtTokenProvider {
     private String secretKey = "secret";
     private final MembersRepository membersRepository;

@@ -17,6 +17,8 @@ import whoami.core.dto.members.MembersSaveRequestDto;
 import whoami.core.dto.members.MembersUpdateRequestDto;
 import whoami.core.security.JwtTokenProvider;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -41,7 +43,14 @@ public class MemberService implements UserDetailsService {
         if (!validateDuplicateMember(requestDto)) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-            requestDto.setRole(Role.USER.getValue());
+
+            // FIXME --> 이대로 고치기
+            if (Objects.equals(requestDto.getRole(), "ADMIN")){
+                requestDto.setRole(Role.ADMIN.getValue());
+            } else{
+                requestDto.setRole(Role.USER.getValue());
+            } //
+
             return membersRepository.save(requestDto.toEntity()).getMemberId();
         }
         return null;
@@ -50,16 +59,15 @@ public class MemberService implements UserDetailsService {
     // NOTE : 로그인
     public LoginResponseDto loginUser(LoginRequestDto loginRequestDto) {
         Optional<Members> members = membersRepository.findByUserId(loginRequestDto.getUserId());
-        System.out.println(loginRequestDto.getUserId()+"hello");
-        System.out.println(members);
-        System.out.println(members.get().getUserId() + loginRequestDto.getUserId());
         Members member = membersRepository.findByUserId(loginRequestDto.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 회원아이디 입니다."));
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getUserId(),loginRequestDto.getPassword());
-        String refreshToken=jwtTokenProvider.createRefreshToken(loginRequestDto.getUserId(),loginRequestDto.getPassword());
+
+        // FIXME : 이대로 고치기!
+        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getUserId(),members.get().getRole());
+        String refreshToken=jwtTokenProvider.createRefreshToken(loginRequestDto.getUserId(),members.get().getRole());
 
         // refreshToken redis db에 저장
         redisService.setValues(refreshToken, loginRequestDto.getUserId());
@@ -67,7 +75,7 @@ public class MemberService implements UserDetailsService {
     }
 
 
-    // FIXME : 회원 조회
+    // NOTE : 회원 조회
     @Transactional
     public Members findById(Long id){
         Members entity=membersRepository.findById(id)
@@ -75,18 +83,27 @@ public class MemberService implements UserDetailsService {
         return entity;
     }
 
-    // FIXME : 회원 정보 수정
+    // NOTE : 회원 리스트 조회
     @Transactional
-    public Long update(Long id, MembersUpdateRequestDto requestDto){
-        Members members=membersRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("해당 게시글이 없습니다. id="+id));
-        members.update(requestDto.getPassword(),requestDto.getPhoneNum(),requestDto.getEmail(),requestDto.isReceiveNotification());
-        return id;
+    public List<Members> listMembers(){
+        List<Members> members=membersRepository.findAll();
+        return members;
     }
 
-    // FIXME : 회원가입 아이디 중복체크
+    // NOTE : 회원 정보 수정
+    @Transactional
+    public Long update(MembersUpdateRequestDto requestDto){
+        Members members=membersRepository.findByUserId(requestDto.getUserId())
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 회원입니다."));
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        members.update(requestDto.getPassword(),requestDto.getPhoneNum(),requestDto.getEmail(),requestDto.isReceiveNotification());
+        return members.getMemberId();
+    }
+
+    // NOTE : 회원가입 아이디 중복체크
     @Transactional
     public boolean validateDuplicateMember(MembersSaveRequestDto membersDto){
-       return membersRepository.existsByUserId(membersDto.getUserId());
+        return membersRepository.existsByUserId(membersDto.getUserId());
     }
 }

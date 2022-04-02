@@ -145,6 +145,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
                     String userId = jwtTokenProvider.getUserPk(refreshToken);
                     /// 이메일로 권한정보 받아오기
                     String roles = jwtTokenProvider.getRoles(userId);
+                    System.out.println("권한 : " + roles);
                     /// 토큰 발급
                     String newAccessToken = jwtTokenProvider.createToken(userId, roles);
                     System.out.println("Access new token : " + newAccessToken);

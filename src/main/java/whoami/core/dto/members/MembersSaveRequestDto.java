@@ -44,7 +44,7 @@ public class MembersSaveRequestDto {
                 .phoneNum(phoneNum)
                 .email(email)
                 .isReceiveNotification(isReceiveNotification)
-                .role(Role.USER.getValue())
+                .role(role) // FIXME
                 .profile(profile)
                 .build();
     }
