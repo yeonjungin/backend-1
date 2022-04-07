@@ -2,21 +2,16 @@ package whoami.core.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import whoami.core.domain.members.Members;
-import whoami.core.dto.members.LoginRequestDto;
-import whoami.core.dto.members.LoginResponseDto;
-import whoami.core.dto.members.MembersSaveRequestDto;
-import whoami.core.dto.members.MembersUpdateRequestDto;
-import whoami.core.security.JwtTokenProvider;
+import whoami.core.dto.members.*;
+import whoami.core.error.Helper;
+import whoami.core.error.Response;
 import whoami.core.service.MemberService;
-import whoami.core.service.RedisService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,44 +21,66 @@ import java.util.Map;
 @RestController
 public class MembersController {
     private final MemberService memberService;
-    private final RedisService redisService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final Response response;
 
     // NOTE : 회원가입
     @PostMapping("/signup")
-    public String joinMember(@RequestBody MembersSaveRequestDto requestDto) {
-        if (memberService.joinMember(requestDto) != null) {
-            return "회원가입 완료";
+    public ResponseEntity<?> joinMember(@RequestBody MembersSaveRequestDto requestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
         }
-        return "중복되는 아이디가 있습니다.";
+        return memberService.joinMember(requestDto);
     }
+
     // NOTE : 회원 정보 수정
     @PatchMapping("/users/update")
-    public ResponseEntity<?> update(@RequestBody MembersUpdateRequestDto requestDto){
-        return ResponseEntity.ok(memberService.update(requestDto));
-    }
-
-    // NOTE : 로그인
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto requestDto, HttpServletRequest request,
-                                   HttpServletResponse response){
-        LoginResponseDto loginResponseDto = memberService.loginUser(requestDto);
-        if (loginResponseDto!=null){
-            response.setHeader("accessToken", loginResponseDto.getAccessToken());
-            response.setHeader("refreshToken",loginResponseDto.getRefreshToken());
-            return ResponseEntity.ok(loginResponseDto);
-        }else{
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> updateMember(@RequestBody MembersUpdateRequestDto requestDto,Errors errors){
+        if (errors.hasErrors()){
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        else{
+            return memberService.updateMember(requestDto);
         }
     }
-    // FIXME : 로그아웃 로직 변경
-    @GetMapping("/api/logout")
-    public ResponseEntity logout(HttpServletRequest request) {
-        System.out.println("logout : " + request.getHeader("refreshToken"));
-        redisService.delValues(request.getHeader("refreshToken"));
-        return ResponseEntity.ok().body("로그아웃 성공!");
+
+
+    // FIXME : 회원 탈퇴 (회원과 관련된 게시글, 댓글 모두 삭제해야함)
+    @DeleteMapping("/users/delete")
+    public ResponseEntity<?> delete(@RequestBody MembersDeleteRequestDto requestDto, Errors errors){
+        if (errors.hasErrors()){
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        else{
+            return memberService.deleteMember(requestDto);
+        }
     }
 
+    // NOTE : 로그인 (토큰 발급)
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginRequestDto requestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.loginUser(requestDto);
+    }
+
+    // NOTE : 토큰 재발급
+    @PatchMapping("/reissue")
+    public ResponseEntity<?> reissue(@RequestBody ReissueTokenRequestDto requestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.reissue(requestDto);
+    }
+
+    // NOTE : 로그아웃
+    @PostMapping("/api/logout")
+    public ResponseEntity<?> logout(@RequestBody LogoutRequestDto requestDto,Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }
+        return memberService.logout(requestDto);
+    }
 
     // NOTE : user test
     @PostMapping("/users/test")
@@ -82,7 +99,7 @@ public class MembersController {
     }
 
     // NOTE : admin : 회원 전체 리스트 조회
-    @GetMapping("/admin/members") // 회원 조회기능
+    @GetMapping("/admin/users") // 회원 조회기능
     public String list(Model model){
         List<Members> members = memberService.listMembers(); // member를 다 가져올 수 있음
         model.addAttribute("members", members);

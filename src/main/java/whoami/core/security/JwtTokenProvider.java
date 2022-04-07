@@ -24,11 +24,10 @@ import java.util.*;
 public class JwtTokenProvider {
     private String secretKey = "secret";
     private final MembersRepository membersRepository;
-    private final RedisService redisService;
 
     // FIXME : 토큰 유효시간 30분 -> 나중에 10분으로 바꿔야함.
-    private final long access_tokenValidTime = 1000L * 60 * 30;  // 1000L * 60 * 30; // 30분
-    private final long refresh_tokenValidTime = 1000L * 60 * 60 ; // 1000 * 60 * 60 * 14; // 2주
+    private final long access_tokenValidTime = 1000L * 60 * 3;  // 1000L * 60 * 30; // 30분
+    private final long refresh_tokenValidTime = 1000L * 60 * 5 ; // 1000 * 60 * 60 * 14; // 2주
 
     // NOTE : 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -72,6 +71,9 @@ public class JwtTokenProvider {
 
     // NOTE : JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
+        if (this.getUserPk(token) == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        }
         System.out.println("사용자 아이디 :"+ this.getUserPk(token) + "token : " + token);
         Optional<Members> member = membersRepository.findByUserId(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(member,"",member.get().getAuthorities());
@@ -80,7 +82,9 @@ public class JwtTokenProvider {
 
     // NOTE : 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        String value = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        System.out.println("getUserPk :" + value);
+        return value;
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
@@ -101,18 +105,23 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            System.out.println("유효기간 : " + claims.getBody().getExpiration().before(new Date()));
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;
         }
     }
-    public boolean validateRefreshToken(String jwtToken) {
-        return validateToken(jwtToken);
+
+    // NOTE : Token 남은 유효시간 (로그아웃을 위해)
+    public Long getExpiration(String token) {
+        Date expiration = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 
-    // NOTE :  RefreshToken 존재유무 확인
-    public boolean existsRefreshToken(String refreshToken) {
-        return redisService.getValues(refreshToken) != null;
+    public boolean validateRefreshToken(String jwtToken) {
+        return validateToken(jwtToken);
     }
 
     // NOTE : 어세스 토큰 헤더 설정
