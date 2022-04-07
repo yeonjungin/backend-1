@@ -92,7 +92,7 @@ POST: /login/verification
 
 ### 1.5. 사용자 로그아웃 (Access token : BlackList, Refresh token : delete in redis)
 #### 1.5.1. URL
-DELETE: /api/logout
+POST : /api/logout
 
 #### 1.5.2. Request
 | Parameter |  Type  | Description |
