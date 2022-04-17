@@ -24,6 +24,17 @@ CREATE TABLE member (
 INSERT INTO member (user_id, password, name, registry_num, phone_num, email) 
 VALUES ('id','password','name','010103','01011112222','example@gmail.com');
 ```
+
+### 팔로우 테이블
+```sql
+CREATE TABLE follow (
+    follow_id bigint(10) NOT NULL AUTO_INCREMENT,
+    follower_id bigint(10) NOT NULL,
+    following_id bigint(10) NOT NULL,
+    PRIMARY KEY (follow_id)
+);
+```
+
 ### 방명록 테이블
  
 boolean 타입일 경우 default 을 지정할 경우 0 (false) 또는 1 (true) 로 지정해야 한다.
@@ -62,7 +73,8 @@ CREATE TABLE visit_comment (
 
 # SQL 문 작성
 
-## 개인별 방명록 조회
+## 방명록
+### 개인별 방명록 조회
 
 특정 사용자의 방명록을 조회할 수 있도록 SQL 문을 작성해야 했다. <br>
 페이지1, 페이지2, 페이지3 등으로 한 페이지에 방문글 5개를 보여주기로 정했다. <br>
@@ -104,7 +116,7 @@ WHERE V.owner_id = 10
 ) TB
 WHERE TB.ROWNUM BETWEEN 6 AND 10;
 ```
-## 방명록 댓글 조회
+### 방명록 댓글 조회
 
 방명록 테이블의 PK 인 guestbook_id 가 주어졌을 때 해당 방명록 글에 달린 댓글을 조회해온다. <br>
 아래는 guestbook_id 인 방명록 글에 달린 댓글을 가져오는 쿼리문이다.
@@ -116,8 +128,47 @@ ON C.member_id = M.member_id
 WHERE guestbook_id = 2001;
 ```
 
+## 팔로워/팔로잉
+
+### 팔로우
+member_id 가 1인 사용자를 member_id 가 3인 사용자가 팔로우 하도록 설정한다.
+```sql
+INSERT INTO follow (follower_id,following_id)
+VALUES (1,3);
+```
+
+### 사용자의 팔로잉/팔로워  수 조회
+집계함수를 이용해 1 번 사용자의 팔로워수를 구한다.
+```sql
+SELECT COUNT(*) FROM follow
+WHERE follower = 1;
+```
+집계함수를 이용해 1번 사용자의 팔로잉수를 구한다.
+```sql
+SELECT COUNT(*) FROM follow
+WHERE following = 1;
+```
+### 사용자의 필로잉/팔로워 목록 조회
+
+# 1 번 사용자를 팔로우 하는 사람 목록 (이름, 아이디)
+
+인라인뷰를 이용해 팔로워 아이디가 1인, 즉 1번 사용자를 팔로우하는 사람의 아이디 목록을 구한다. <br>
+member 테이블과 조인하여 팔로우하는 사람의 이름과 아이디를 구할 수 있다.
+```sql
+SELECT M.name, M.user_id FROM (SELECT following_id FROM follow WHERE follower_id = 1) F
+INNER JOIN member M 
+ON F.following_id = M.member_id;
+```
+마찬가지로 1 번 사용자가 팔로우 하는 사람 목록 (이름, 아이디) 을 조회한다.
+```sql
+SELECT M.name, M.user_id FROM (SELECT follower_id FROM follow WHERE following_id = 1) F
+INNER JOIN member M 
+ON F.follower_id = M.member_id;
+```
+
 # 프로시저 (PL/SQL) 를 이용한 테스트용 데이터 생성
 
+## 방명록 페이징 테스트용 데이터 생성
 페이징 테스트를 하기 위해 많은 양의 더미 데이터가 필요했다. <br>
 따라서 프로시저를 생성해 더미 데이터를 삽입하기로 결정했다. <br>
 프로시저를 정의할 때 내부에 세미콜론을 사용하기 때문에 문법의 끝을 나타내는 구분자를 재정의할 필요성을 느꼈다. <br>
