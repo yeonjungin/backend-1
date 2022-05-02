@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class FollowController {
     }
 
     // NOTE : 언팔로우
-    @PostMapping("/users/unfollow")
+    @DeleteMapping("/users/unfollow")
     public ResponseEntity<?> unfollow(@RequestBody UnfollowRequestDto requestDto, Errors errors) {
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
