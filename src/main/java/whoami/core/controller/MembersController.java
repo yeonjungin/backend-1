@@ -59,7 +59,7 @@ public class MembersController {
         }
     }
 
-    // FIXME : 회원가입 프로필 추가
+    // NOTE : 회원가입 프로필 추가
     @PostMapping(value="/users/profile",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> profileUpload(@RequestPart ProfileUploadRequestDto requestDto, @RequestPart MultipartFile multipartFile, Errors errors) {
         if (errors.hasErrors()) {
@@ -69,7 +69,7 @@ public class MembersController {
         }
     }
 
-    // FIXME : 회원가입 프로필 삭제
+    // NOTE : 회원가입 프로필 삭제
     @PatchMapping("/users/profileDelete")
     public ResponseEntity<?> profileDelete(@RequestBody ProfileDeleteRequestDto requestDto, Errors errors) {
         if (errors.hasErrors()) {
@@ -104,22 +104,6 @@ public class MembersController {
             return response.invalidFields(Helper.refineErrors(errors));
         }
         return memberService.logout(requestDto);
-    }
-
-    // NOTE : user test
-    @PostMapping("/users/test")
-    public Map userResponseTest() {
-        Map<String, String> result = new HashMap<>();
-        result.put("result","user ok");
-        return result;
-    }
-
-    // NOTE : admin test
-    @PostMapping("/admin/test")
-    public Map adminResponseTest() {
-        Map<String, String> result = new HashMap<>();
-        result.put("result","admin ok");
-        return result;
     }
 
     // NOTE : admin : 회원 전체 리스트 조회

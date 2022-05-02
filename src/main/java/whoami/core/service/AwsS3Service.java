@@ -54,7 +54,7 @@ public class AwsS3Service {
             }
             Optional<File> uploadFile = convert(multipartFile);  // 파일 변환할 수 없으면 에러
             if (uploadFile.isEmpty()){
-                return response.fail("파일 변환이 올바르게 이루어지지 않았습니다.", HttpStatus.CONFLICT);
+                return response.fail("파일 변환이 올바르게 이루어지지 않았습니다.", HttpStatus.BAD_REQUEST);
             }
             String url = upload(uploadFile.get(), dirName,members.get());  // s3에 저장된 이미지의 주소 -> db에 넣기.
             return response.success(Collections.EMPTY_LIST,"프로필 사진 업로드가 완료되었습니다.",HttpStatus.CREATED);
