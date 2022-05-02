@@ -24,7 +24,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter  {
         // 헤더에서 JWT 를 받아옵니다.
         // 1. Request Header 에서 JWT Access 토큰 추출
         String token = jwtTokenProvider.resolveAccessToken(request);
-        System.out.println("token : " + token);
         // 2. validateToken 으로 토큰 유효성 검사
         if (token != null && jwtTokenProvider.validateToken(token)) {
             // (추가) Redis 에 해당 accessToken logout 여부 확인

@@ -143,16 +143,17 @@ PATCH: /users/update
 #### 1.7.4. Http code
 - 201 : Created
 - 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
+- 409 : Conflict (리소스가 충돌 혹은 삭제 시 연관된 데이터가 남아있는 경우)
 
-### 1.8. 사용자 프로필 추가, 수정, 삭제
+### 1.8. 사용자 프로필 추가 및 수정
 #### 1.8.1 URL
 PATCH :/users/profile
 
 #### 1.8.2. Request
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| userId | String | 회원 아이디 |
-| profile | String | 프로필 사진 저장 경로 |
+| userId | String | 회원 아이디      |
+| profile |  File  | 프로필 사진 파일   |
 
 #### 1.8.3. Response
 없음
@@ -161,17 +162,33 @@ PATCH :/users/profile
 - 201 : Created
 - 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
 
-### 1.9. 사용자 리스트 조회 (admin만 가능)
-#### 1.9.1. URL
-GET :/admin/users
+### 1.9. 사용자 프로필 삭제
+#### 1.9.1 URL
+PATCH :/users/profileDelete
 
 #### 1.9.2. Request
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| userId | String | 회원 아이디      |
+
+#### 1.9.3. Response
+없음
+
+#### 1.9.4. Http code
+- 200 : Ok
+- 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
+
+### 1.10. 사용자 리스트 조회 (admin만 가능)
+#### 1.10.1. URL
+GET :/admin/users
+
+#### 1.10.2. Request
 userId가 없을 경우 모든 data 반환
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
 
-#### 1.9.3. Response
+#### 1.10.3. Response
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -179,36 +196,15 @@ userId가 없을 경우 모든 data 반환
 | phone_num | String | 휴대전화번호 |
 | email | String | 이메일 주소 |
 
-#### 1.9.4. Http code
+#### 1.10.4. Http code
 - 200 : Ok
 - 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
 - 401 : Unauthorized (익명의 사용자의 접근을 차단함)
 - 403 : Forbidden (관리자 권한이 없음)
 
-### 1.10. 팔로잉 및 팔로워 추가
-#### 1.10.1. URL
-PUT :/users/follow
-
-#### 1.10.2. Request
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| followedId | String | 팔로우 되는 유저 아이디 |
-| followingId | String | 팔로잉 하는 유저 아이디 |
-
-#### 1.10.3. Response
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| followId | Number | 팔로우 번호 |
-| followedId | String | 팔로우 되는 유저 아이디 |
-| followingId | String | 팔로잉 하는 유저 아이디 |
-
-#### 1.10.4. Http code
-- 201 : Created
-- 409 : Conflict (이미 존재하는 리소스(팔로우)를 중복 요청했을 경우)
-
-### 1.11. 팔로잉 및 팔로워 삭제
+### 1.11. 팔로잉 및 팔로워 추가
 #### 1.11.1. URL
-DELETE :/users/unfollow
+PUT :/users/follow
 
 #### 1.11.2. Request
 | Parameter |  Type  | Description |
@@ -217,9 +213,30 @@ DELETE :/users/unfollow
 | followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.11.3. Response
-없음
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| followId | Number | 팔로우 번호 |
+| followedId | String | 팔로우 되는 유저 아이디 |
+| followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.11.4. Http code
+- 201 : Created
+- 409 : Conflict (이미 존재하는 리소스(팔로우)를 중복 요청했을 경우)
+
+### 1.12. 팔로잉 및 팔로워 삭제
+#### 1.12.1. URL
+DELETE :/users/unfollow
+
+#### 1.12.2. Request
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| followedId | String | 팔로우 되는 유저 아이디 |
+| followingId | String | 팔로잉 하는 유저 아이디 |
+
+#### 1.12.3. Response
+없음
+
+#### 1.12.4. Http code
 - 200 : Ok
 - 400 : Bad Request (애초에 팔로우 관계가 아닌 경우)
 

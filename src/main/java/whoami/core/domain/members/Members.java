@@ -67,6 +67,11 @@ public class Members implements UserDetails {
         this.isReceiveNotification=isReceiveNotification;
     }
 
+    public void update(String profile){
+        this.profile=profile;
+    }
+
+
     public void profileUpdate(String profile){
         this.profile=profile;
     }
