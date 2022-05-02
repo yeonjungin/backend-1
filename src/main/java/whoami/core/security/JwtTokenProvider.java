@@ -74,7 +74,6 @@ public class JwtTokenProvider {
         if (this.getUserPk(token) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
-        System.out.println("사용자 아이디 :"+ this.getUserPk(token) + "token : " + token);
         Optional<Members> member = membersRepository.findByUserId(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(member,"",member.get().getAuthorities());
     }
@@ -83,12 +82,10 @@ public class JwtTokenProvider {
     // NOTE : 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
         String value = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-        System.out.println("getUserPk :" + value);
         return value;
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
-        System.out.println("resolveAccessToken : " + request.getHeader("accessToken"));
         String token = request.getHeader("accessToken");
         return token;
 
@@ -96,7 +93,6 @@ public class JwtTokenProvider {
 
     // NOTE : Request의 Header에서 RefreshToken 값을 가져옵니다. "authorization" : "token'
     public String resolveRefreshToken(HttpServletRequest request) {
-        System.out.println("resolveRefreshToken : " + request.getHeader("refreshToken"));
         String token=request.getHeader("refreshToken");
         return token;
     }
@@ -105,7 +101,6 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            System.out.println("유효기간 : " + claims.getBody().getExpiration().before(new Date()));
             return !claims.getBody().getExpiration().before(new Date());
         } catch (Exception e) {
             return false;

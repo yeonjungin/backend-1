@@ -2,10 +2,13 @@ package whoami.core.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import whoami.core.service.AwsS3Service;
 import whoami.core.domain.members.Members;
 import whoami.core.dto.members.*;
 import whoami.core.error.Helper;
@@ -22,6 +25,7 @@ import java.util.Map;
 public class MembersController {
     private final MemberService memberService;
     private final Response response;
+    private final AwsS3Service s3Uploader;
 
     // NOTE : 회원가입
     @PostMapping("/signup")
@@ -52,6 +56,26 @@ public class MembersController {
         }
         else{
             return memberService.deleteMember(requestDto);
+        }
+    }
+
+    // FIXME : 회원가입 프로필 추가
+    @PostMapping(value="/users/profile",consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<?> profileUpload(@RequestPart ProfileUploadRequestDto requestDto, @RequestPart MultipartFile multipartFile, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }else {
+            return s3Uploader.profileUpload(requestDto,multipartFile);
+        }
+    }
+
+    // FIXME : 회원가입 프로필 삭제
+    @PatchMapping("/users/profileDelete")
+    public ResponseEntity<?> profileDelete(@RequestBody ProfileDeleteRequestDto requestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return response.invalidFields(Helper.refineErrors(errors));
+        }else {
+            return s3Uploader.profileDelete(requestDto);
         }
     }
 
