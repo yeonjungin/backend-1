@@ -62,6 +62,7 @@ public class MemberService implements UserDetailsService {
     }
 
     // NOTE : 로그인
+    @Transactional
     public ResponseEntity<?> loginUser(LoginRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
 
@@ -82,6 +83,7 @@ public class MemberService implements UserDetailsService {
     }
 
     // NOTE : 토큰 재발급
+    @Transactional
     public ResponseEntity<? extends Object> reissue(ReissueTokenRequestDto requestDto){
         if (!jwtTokenProvider.validateToken(requestDto.getRefreshToken())) {
             return response.fail("Refresh Token 정보가 유효하지 않습니다.", HttpStatus.BAD_REQUEST);
@@ -111,6 +113,7 @@ public class MemberService implements UserDetailsService {
     }
 
     // NOTE : 로그아웃
+    @Transactional
     public ResponseEntity<? extends Object> logout(LogoutRequestDto requestDto) {
         String accessToken=requestDto.getAccessToken();
         String refreshToken=requestDto.getRefreshToken();
