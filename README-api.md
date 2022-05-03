@@ -150,13 +150,15 @@ PATCH: /users/update
 PATCH :/users/profile
 
 #### 1.8.2. Request
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| userId | String | 회원 아이디      |
-| profile |  File  | 프로필 사진 파일   |
+| Parameter |  Type  | Description | Content Type     |
+|-----------|:------:|-----------|------------------|
+| userId | String | 회원 아이디    | application/json |
+| profile |  File  | 프로필 사진 파일 | image/jpeg |
 
 #### 1.8.3. Response
-없음
+| Parameter  |  Type  | Description |
+|------------|:------:|-------------|
+| profileUrl | String | 프로필 경로      |
 
 #### 1.8.4. Http code
 - 201 : Created
