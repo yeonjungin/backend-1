@@ -14,6 +14,7 @@ import whoami.core.domain.members.Members;
 import whoami.core.domain.members.MembersRepository;
 import whoami.core.dto.members.ProfileDeleteRequestDto;
 import whoami.core.dto.members.ProfileUploadRequestDto;
+import whoami.core.dto.members.ProfileUploadResponseDto;
 import whoami.core.error.Response;
 
 import javax.transaction.Transactional;
@@ -57,7 +58,7 @@ public class AwsS3Service {
                 return response.fail("파일 변환이 올바르게 이루어지지 않았습니다.", HttpStatus.BAD_REQUEST);
             }
             String url = upload(uploadFile.get(), dirName,members.get());  // s3에 저장된 이미지의 주소 -> db에 넣기.
-            return response.success(Collections.EMPTY_LIST,"프로필 사진 업로드가 완료되었습니다.",HttpStatus.CREATED);
+            return response.success(new ProfileUploadResponseDto(url),"프로필 사진 업로드가 완료되었습니다.",HttpStatus.CREATED);
         } catch (Exception e){
             return response.fail(e.toString(),HttpStatus.BAD_REQUEST);
         }
