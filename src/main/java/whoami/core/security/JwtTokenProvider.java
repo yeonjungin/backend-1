@@ -86,9 +86,7 @@ public class JwtTokenProvider {
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
-        String token = request.getHeader("accessToken");
-        return token;
-
+        return request.getHeader("accessToken");
     }
 
     // NOTE : Request의 Header에서 RefreshToken 값을 가져옵니다. "authorization" : "token'
