@@ -74,21 +74,7 @@ PATCH :/reissue
 - 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
 
 ### 1.4. 사용자 로그인 (토큰 검증) -> << 검증은 발급, 로그인 절차에 포함 >>
-#### 1.4.1. URL
-POST: /login/verification
 
-#### 1.4.2. Request
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| accessToken | String | 인증을 위한 토큰 |
-
-#### 1.4.3. Response
-없음
-
-#### 1.4.4. Http code
-- 201 : Created
-- 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
-- 401 : Unauthorized (로그인 실패)
 
 ### 1.5. 사용자 로그아웃 (Access token : BlackList, Refresh token : delete in redis)
 #### 1.5.1. URL
@@ -113,6 +99,12 @@ DELETE: /api/logout
 DELETE :/users/delete
 
 #### 1.6.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -129,6 +121,12 @@ DELETE :/users/delete
 PATCH: /users/update
 
 #### 1.6.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -150,6 +148,12 @@ PATCH: /users/update
 PATCH :/users/profile
 
 #### 1.8.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description | Content Type     |
 |-----------|:------:|-----------|------------------|
 | userId | String | 회원 아이디    | application/json |
@@ -169,6 +173,12 @@ PATCH :/users/profile
 PATCH :/users/profileDelete
 
 #### 1.9.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디      |
@@ -182,10 +192,10 @@ PATCH :/users/profileDelete
 
 ### 1.10. 사용자 리스트 조회 (admin만 가능)
 #### 1.10.1. URL
-GET :/admin/users
+GET :/admin/allMember
 
 #### 1.10.2. Request
-userId가 없을 경우 모든 data 반환
+모든 회원 리스트 반환
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -209,6 +219,12 @@ userId가 없을 경우 모든 data 반환
 PUT :/users/follow
 
 #### 1.11.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | followedId | String | 팔로우 되는 유저 아이디 |
@@ -230,6 +246,12 @@ PUT :/users/follow
 DELETE :/users/unfollow
 
 #### 1.12.2. Request
+1) Header
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | followedId | String | 팔로우 되는 유저 아이디 |

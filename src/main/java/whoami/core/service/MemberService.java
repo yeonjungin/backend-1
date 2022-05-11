@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import whoami.core.domain.Role;
 import whoami.core.domain.members.Members;
 import whoami.core.domain.members.MembersRepository;
@@ -20,10 +21,7 @@ import whoami.core.dto.members.*;
 import whoami.core.error.Response;
 import whoami.core.security.JwtTokenProvider;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -153,13 +151,12 @@ public class MemberService implements UserDetailsService {
     // NOTE : 회원 정보 수정
     @Transactional
     public ResponseEntity<? extends Object>  updateMember(MembersUpdateRequestDto requestDto){
-        Members members=membersRepository.findByUserId(requestDto.getUserId())
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 회원입니다."));
         try {
-            if (members==null) {
+            if (membersRepository.findByUserId(requestDto.getUserId()).isEmpty()) {
                 return response.fail("존재하지 않는 회원입니다.", HttpStatus.BAD_REQUEST);
             }
             else{
+                Members members=membersRepository.findByUserId(requestDto.getUserId()).get();
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
                 members.update(requestDto.getPassword(),requestDto.getPhoneNum(),requestDto.getEmail(),requestDto.isReceiveNotification());
@@ -195,4 +192,6 @@ public class MemberService implements UserDetailsService {
             return response.fail(e.toString(),HttpStatus.CONFLICT);
         }
     }
+
+
 }
