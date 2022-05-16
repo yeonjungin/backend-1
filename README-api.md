@@ -100,11 +100,13 @@ DELETE :/users/delete
 
 #### 1.6.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -122,14 +124,15 @@ PATCH: /users/update
 
 #### 1.6.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| userId | String | 회원 아이디 |
 | password | String | 회원 비밀번호 |
 | phone_num | String | 휴대전화번호 |
 | email | String | 이메일 주소 |
@@ -149,11 +152,13 @@ PATCH :/users/profile
 
 #### 1.8.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description | Content Type     |
 |-----------|:------:|-----------|------------------|
 | userId | String | 회원 아이디    | application/json |
@@ -174,11 +179,13 @@ PATCH :/users/profileDelete
 
 #### 1.9.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디      |
@@ -196,6 +203,7 @@ GET :/admin/allMember
 
 #### 1.10.2. Request
 모든 회원 리스트 반환
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | userId | String | 회원 아이디 |
@@ -220,15 +228,16 @@ PUT :/users/follow
 
 #### 1.11.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | followedId | String | 팔로우 되는 유저 아이디 |
-| followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.11.3. Response
 | Parameter |  Type  | Description |
@@ -247,15 +256,16 @@ DELETE :/users/unfollow
 
 #### 1.12.2. Request
 1) Header
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | accessToken | String | 인증을 위한 토큰 |
 
 2) Body
+
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | followedId | String | 팔로우 되는 유저 아이디 |
-| followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.12.3. Response
 없음

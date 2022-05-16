@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MembersUpdateRequestDto {
-    private String userId;
     private String password;
     private String phoneNum;
     private String email;

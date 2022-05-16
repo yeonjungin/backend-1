@@ -9,12 +9,10 @@ import whoami.core.domain.follow.Follow;
 @NoArgsConstructor
 public class FollowRequestDto {
     private String followerId;
-    private String followingId;
 
     @Builder
-    public FollowRequestDto(String followerId,String followingId) {
+    public FollowRequestDto(String followerId) {
         this.followerId=followerId;
-        this.followingId=followingId;
     }
 
 

@@ -71,11 +71,6 @@ public class Members implements UserDetails {
         this.profile=profile;
     }
 
-
-    public void profileUpdate(String profile){
-        this.profile=profile;
-    }
-
     // NOTE : 유저의 권한 목록
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

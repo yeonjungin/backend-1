@@ -20,7 +20,7 @@ public class Follow {
     @ManyToOne
     private Members followerId;
 
-    @JoinColumn(name="following_id") // 팔로잉 (구독 하는 사용자)
+    @JoinColumn(name="following_id") // 팔로잉 (구독하는 사용자)
     @ManyToOne
     private Members followingId;
 

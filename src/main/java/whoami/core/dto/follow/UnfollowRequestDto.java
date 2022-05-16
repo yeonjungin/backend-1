@@ -10,11 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UnfollowRequestDto {
     private String followerId;
-    private String followingId;
 
     @Builder
-    public UnfollowRequestDto(String followerId,String followingId) {
+    public UnfollowRequestDto(String followerId) {
         this.followerId=followerId;
-        this.followingId=followingId;
     }
 }

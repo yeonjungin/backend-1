@@ -47,7 +47,6 @@ public class MembersController {
         }
     }
 
-
     // FIXME : 회원 탈퇴 (회원과 관련된 게시글, 댓글 모두 삭제해야함)
     @DeleteMapping("/users/delete")
     public ResponseEntity<?> delete(@RequestBody MembersDeleteRequestDto requestDto, Errors errors){
@@ -71,11 +70,12 @@ public class MembersController {
 
     // NOTE : 회원가입 프로필 삭제
     @PatchMapping("/users/profileDelete")
-    public ResponseEntity<?> profileDelete(@RequestBody ProfileDeleteRequestDto requestDto, Errors errors) {
-        if (errors.hasErrors()) {
-            return response.invalidFields(Helper.refineErrors(errors));
-        }else {
-            return s3Uploader.profileDelete(requestDto);
+    public ResponseEntity<?> profileDelete() {
+        try{
+            return s3Uploader.profileDelete();
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
         }
     }
 
@@ -113,6 +113,7 @@ public class MembersController {
         model.addAttribute("members", members);
         return "members/memberList"; // FIXME : Return 페이지
     }
+
 }
 
 

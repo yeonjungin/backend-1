@@ -8,11 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import whoami.core.domain.members.Members;
 import whoami.core.domain.members.MembersRepository;
-import whoami.core.dto.members.ProfileDeleteRequestDto;
 import whoami.core.dto.members.ProfileUploadRequestDto;
 import whoami.core.dto.members.ProfileUploadResponseDto;
 import whoami.core.error.Response;
@@ -65,14 +66,21 @@ public class AwsS3Service {
     }
 
     @Transactional
-    public ResponseEntity<? extends Object> profileDelete(ProfileDeleteRequestDto requestDto){
-        Optional<Members> members=membersRepository.findByUserId(requestDto.getUserId());
-        if (members.get().getProfile()==null){
+    public ResponseEntity<? extends Object> profileDelete(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Members> nowMember = Optional.empty();
+        if (authentication.getPrincipal() instanceof Optional) {
+            nowMember = (Optional<Members>) authentication.getPrincipal();
+        }
+        Members member = membersRepository.findByUserId(nowMember.get().getUserId()).get();
+        String nowMemberId=member.getUserId();
+
+        if (member.getProfile()==null){
             return response.fail("삭제할 사진이 없습니다.",HttpStatus.BAD_REQUEST);
         }
         try{
-            deleteS3(members.get().getProfile());
-            membersUpdateUrl(null,members.get());
+            deleteS3(member.getProfile());
+            membersUpdateUrl(null,member);
             return response.success(Collections.EMPTY_LIST,"프로필 사진 삭제가 완료되었습니다.",HttpStatus.OK);
         }catch (Exception e){
             return response.fail(e.toString(),HttpStatus.BAD_REQUEST);
