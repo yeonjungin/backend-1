@@ -13,8 +13,6 @@ import java.util.LinkedList;
 @Component
 public class Response {
 
-
-
     @Getter
     @Builder
     private static class Body {

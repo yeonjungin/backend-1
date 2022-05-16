@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
 import whoami.core.domain.Role;
+import whoami.core.domain.follow.Follow;
 import whoami.core.domain.members.Members;
 import whoami.core.domain.members.MembersRepository;
 import whoami.core.dto.members.*;
@@ -129,6 +130,7 @@ public class MemberService implements UserDetailsService {
             redisService.delValues(userId);
         }
 
+        SecurityContextHolder.clearContext();
         redisService.setValues(accessToken,"logout",jwtTokenProvider.getExpiration(accessToken));
         return response.success(Collections.EMPTY_LIST,"로그아웃 되었습니다.",HttpStatus.CREATED);
     }
@@ -152,14 +154,21 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public ResponseEntity<? extends Object>  updateMember(MembersUpdateRequestDto requestDto){
         try {
-            if (membersRepository.findByUserId(requestDto.getUserId()).isEmpty()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Optional<Members> nowMember = Optional.empty();
+            if (authentication.getPrincipal() instanceof Optional) {
+                nowMember = (Optional<Members>) authentication.getPrincipal();
+            }
+            Members member = membersRepository.findByUserId(nowMember.get().getUserId()).get();
+            String nowMemberId=member.getUserId();
+
+            if (membersRepository.findByUserId(nowMemberId).isEmpty()) {
                 return response.fail("존재하지 않는 회원입니다.", HttpStatus.BAD_REQUEST);
             }
             else{
-                Members members=membersRepository.findByUserId(requestDto.getUserId()).get();
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-                members.update(requestDto.getPassword(),requestDto.getPhoneNum(),requestDto.getEmail(),requestDto.isReceiveNotification());
+                member.update(requestDto.getPassword(),requestDto.getPhoneNum(),requestDto.getEmail(),requestDto.isReceiveNotification());
                 return response.success(Collections.EMPTY_LIST,"회원 정보 수정이 완료되었습니다",HttpStatus.CREATED);
             }
         }catch (Exception e){
