@@ -107,9 +107,7 @@ DELETE :/users/delete
 
 2) Body
 
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| userId | String | 회원 아이디 |
+없음
 
 #### 1.6.3. Response
 없음
@@ -186,9 +184,7 @@ PATCH :/users/profileDelete
 
 2) Body
 
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| userId | String | 회원 아이디      |
+ 없음
 
 #### 1.9.3. Response
 없음
@@ -237,13 +233,13 @@ PUT :/users/follow
 
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| followedId | String | 팔로우 되는 유저 아이디 |
+| followerId | String | 팔로우 되는 유저 아이디 |
 
 #### 1.11.3. Response
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
 | followId | Number | 팔로우 번호 |
-| followedId | String | 팔로우 되는 유저 아이디 |
+| followerId | String | 팔로우 되는 유저 아이디 |
 | followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.11.4. Http code
@@ -265,7 +261,7 @@ DELETE :/users/unfollow
 
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| followedId | String | 팔로우 되는 유저 아이디 |
+| followerId | String | 팔로우 되는 유저 아이디 |
 
 #### 1.12.3. Response
 없음
