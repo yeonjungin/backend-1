@@ -47,14 +47,14 @@ public class MembersController {
         }
     }
 
-    // FIXME : 회원 탈퇴 (회원과 관련된 게시글, 댓글 모두 삭제해야함)
+    // NOTE : 회원 탈퇴
     @DeleteMapping("/users/delete")
-    public ResponseEntity<?> delete(@RequestBody MembersDeleteRequestDto requestDto, Errors errors){
-        if (errors.hasErrors()){
-            return response.invalidFields(Helper.refineErrors(errors));
-        }
-        else{
-            return memberService.deleteMember(requestDto);
+    public ResponseEntity<?> delete() {
+        try{
+            return memberService.deleteMember();
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
         }
     }
 

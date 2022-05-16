@@ -182,16 +182,23 @@ public class MemberService implements UserDetailsService {
         return membersRepository.existsByUserId(membersDto.getUserId());
     }
 
-    // FIXME : 회원 탈퇴 -> 회원과 관련된 내용 삭제 로직 추가해야 함.
+    // NOTE : 회원 탈퇴
     @Transactional
-    public ResponseEntity<? extends Object> deleteMember(MembersDeleteRequestDto requestDto) {
-        Optional<Members> members=membersRepository.findByUserId(requestDto.getUserId());
+    public ResponseEntity<? extends Object> deleteMember() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Members> principal = Optional.empty();
+        if (authentication.getPrincipal() instanceof Optional) {
+            principal = (Optional<Members>) authentication.getPrincipal();
+        }
+        Members nowMember = membersRepository.findByUserId(principal.get().getUserId()).get();
+        Optional<Members> member=membersRepository.findByUserId(principal.get().getUserId());
+
         try {
-            if (!members.isPresent()){
+            if (!member.isPresent()){
                 return response.fail("없는 회원입니다.", HttpStatus.BAD_REQUEST);
             }
             else{
-                members.ifPresent(selectUser -> {
+                member.ifPresent(selectUser -> {
                     membersRepository.delete(selectUser);
                 });
                 return response.success(Collections.EMPTY_LIST,"회원탈퇴 완료되었습니다.",HttpStatus.OK);
@@ -201,6 +208,4 @@ public class MemberService implements UserDetailsService {
             return response.fail(e.toString(),HttpStatus.CONFLICT);
         }
     }
-
-
 }
