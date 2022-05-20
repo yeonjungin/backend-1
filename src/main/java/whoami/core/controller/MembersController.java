@@ -106,7 +106,7 @@ public class MembersController {
         return memberService.logout(requestDto);
     }
 
-    // NOTE : admin : 회원 전체 리스트 조회
+    // FIXME : admin : 회원 전체 리스트 조회
     @GetMapping("/admin/allMember") // 회원 조회기능
     public String list(Model model){
         List<Members> members = memberService.listMembers(); // member를 다 가져올 수 있음
