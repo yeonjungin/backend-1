@@ -193,34 +193,38 @@ PATCH :/users/profileDelete
 - 200 : Ok
 - 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
 
-### 1.10. 사용자 리스트 조회 (admin만 가능)
+
+### 1.10. 팔로잉 및 팔로워 추가
 #### 1.10.1. URL
-GET :/admin/allMember
+PUT :/users/follow
 
 #### 1.10.2. Request
-모든 회원 리스트 반환
+1) Header
 
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| userId | String | 회원 아이디 |
+| accessToken | String | 인증을 위한 토큰 |
+
+2) Body
+
+| Parameter |  Type  | Description |
+|-----------|:------:|-------------|
+| followerId | String | 팔로우 되는 유저 아이디 |
 
 #### 1.10.3. Response
 | Parameter |  Type  | Description |
 |-----------|:------:|-------------|
-| userId | String | 회원 아이디 |
-| name | String | 이름 |
-| phone_num | String | 휴대전화번호 |
-| email | String | 이메일 주소 |
+| followId | Number | 팔로우 번호 |
+| followerId | String | 팔로우 되는 유저 아이디 |
+| followingId | String | 팔로잉 하는 유저 아이디 |
 
 #### 1.10.4. Http code
-- 200 : Ok
-- 400 : Bad Request (애초에 parameter를 잘못 전달하거나 없는 경우)
-- 401 : Unauthorized (익명의 사용자의 접근을 차단함)
-- 403 : Forbidden (관리자 권한이 없음)
+- 201 : Created
+- 409 : Conflict (이미 존재하는 리소스(팔로우)를 중복 요청했을 경우)
 
-### 1.11. 팔로잉 및 팔로워 추가
+### 1.11. 팔로잉 및 팔로워 삭제
 #### 1.11.1. URL
-PUT :/users/follow
+DELETE :/users/unfollow
 
 #### 1.11.2. Request
 1) Header
@@ -236,37 +240,9 @@ PUT :/users/follow
 | followerId | String | 팔로우 되는 유저 아이디 |
 
 #### 1.11.3. Response
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| followId | Number | 팔로우 번호 |
-| followerId | String | 팔로우 되는 유저 아이디 |
-| followingId | String | 팔로잉 하는 유저 아이디 |
-
-#### 1.11.4. Http code
-- 201 : Created
-- 409 : Conflict (이미 존재하는 리소스(팔로우)를 중복 요청했을 경우)
-
-### 1.12. 팔로잉 및 팔로워 삭제
-#### 1.12.1. URL
-DELETE :/users/unfollow
-
-#### 1.12.2. Request
-1) Header
-
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| accessToken | String | 인증을 위한 토큰 |
-
-2) Body
-
-| Parameter |  Type  | Description |
-|-----------|:------:|-------------|
-| followerId | String | 팔로우 되는 유저 아이디 |
-
-#### 1.12.3. Response
 없음
 
-#### 1.12.4. Http code
+#### 1.11.4. Http code
 - 200 : Ok
 - 400 : Bad Request (애초에 팔로우 관계가 아닌 경우)
 
