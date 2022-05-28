@@ -2,7 +2,7 @@ package whoami.core.domain.follow;
 
 
 import lombok.*;
-import whoami.core.domain.members.Members;
+import whoami.core.domain.member.Member;
 
 import javax.persistence.*;
 
@@ -18,14 +18,14 @@ public class Follow {
 
     @JoinColumn(name="follower_id") // 팔로워 (구독 당하는 사용자)
     @ManyToOne
-    private Members followerId;
+    private Member followerId;
 
     @JoinColumn(name="following_id") // 팔로잉 (구독하는 사용자)
     @ManyToOne
-    private Members followingId;
+    private Member followingId;
 
     @Builder
-    public Follow(Members followerId, Members followingId) {
+    public Follow(Member followerId, Member followingId) {
         this.followerId = followerId;
         this.followingId = followingId;
     }

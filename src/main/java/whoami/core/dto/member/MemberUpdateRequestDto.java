@@ -1,4 +1,4 @@
-package whoami.core.dto.members;
+package whoami.core.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MembersUpdateRequestDto {
+public class MemberUpdateRequestDto {
     private String password;
     private String phoneNum;
     private String email;
     private boolean isReceiveNotification;
 
     @Builder
-    public MembersUpdateRequestDto(String password, String phoneNum, String email, boolean isReceiveNotification) {
+    public MemberUpdateRequestDto(String password, String phoneNum, String email, boolean isReceiveNotification) {
         this.password =  password;
         this.phoneNum = phoneNum;
         this.email = email;

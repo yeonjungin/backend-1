@@ -15,10 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import whoami.core.domain.Role;
-import whoami.core.domain.follow.Follow;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
-import whoami.core.dto.members.*;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
+import whoami.core.dto.member.*;
 import whoami.core.error.Response;
 import whoami.core.security.JwtTokenProvider;
 
@@ -27,7 +26,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
-    private final MembersRepository membersRepository;
+    private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final RedisService redisService;
@@ -36,13 +35,13 @@ public class MemberService implements UserDetailsService {
     // NOTE : 스프링 시큐리티에서 유저를 찾는 메소드
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return membersRepository.findByUserId(username)
+        return memberRepository.findByUserId(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
     }
 
     // NOTE : 회원가입 처리
     @Transactional
-    public ResponseEntity<? extends Object> joinMember(MembersSaveRequestDto requestDto) {
+    public ResponseEntity<? extends Object> joinMember(MemberSaveRequestDto requestDto) {
         if (!validateDuplicateMember(requestDto)) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
@@ -53,8 +52,8 @@ public class MemberService implements UserDetailsService {
                 requestDto.setRole(Role.USER.getValue());
             }
 
-            membersRepository.save(requestDto.toEntity());
-            return response.success(new MembersResponseDto(requestDto.toEntity()),"회원가입이 완료되었습니다.",HttpStatus.CREATED);
+            memberRepository.save(requestDto.toEntity());
+            return response.success(new MemberResponseDto(requestDto.toEntity()),"회원가입이 완료되었습니다.",HttpStatus.CREATED);
         }
         return response.fail("이미 회원가입된 이메일입니다.", HttpStatus.CONFLICT);
 
@@ -65,8 +64,8 @@ public class MemberService implements UserDetailsService {
     public ResponseEntity<?> loginUser(LoginRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
 
-        Optional<Members> members = membersRepository.findByUserId(requestDto.getUserId());
-        if (membersRepository.findByUserId(requestDto.getUserId()).isEmpty()){
+        Optional<Member> members = memberRepository.findByUserId(requestDto.getUserId());
+        if (memberRepository.findByUserId(requestDto.getUserId()).isEmpty()){
             return response.fail("존재하지 않는 아이디입니다.",HttpStatus.UNAUTHORIZED);
         }
         if (!passwordEncoder.matches(requestDto.getPassword(), members.get().getPassword())) {
@@ -137,32 +136,32 @@ public class MemberService implements UserDetailsService {
 
     // NOTE : 회원 조회
     @Transactional
-    public Members findById(Long id){
-        Members entity=membersRepository.findById(id)
+    public Member findById(Long id){
+        Member entity= memberRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 회원입니다. id="+id));
         return entity;
     }
 
     // NOTE : 회원 리스트 조회
     @Transactional
-    public List<Members> listMembers(){
-        List<Members> members=membersRepository.findAll();
+    public List<Member> listMembers(){
+        List<Member> members= memberRepository.findAll();
         return members;
     }
 
     // NOTE : 회원 정보 수정
     @Transactional
-    public ResponseEntity<? extends Object>  updateMember(MembersUpdateRequestDto requestDto){
+    public ResponseEntity<? extends Object>  updateMember(MemberUpdateRequestDto requestDto){
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Optional<Members> nowMember = Optional.empty();
+            Optional<Member> nowMember = Optional.empty();
             if (authentication.getPrincipal() instanceof Optional) {
-                nowMember = (Optional<Members>) authentication.getPrincipal();
+                nowMember = (Optional<Member>) authentication.getPrincipal();
             }
-            Members member = membersRepository.findByUserId(nowMember.get().getUserId()).get();
+            Member member = memberRepository.findByUserId(nowMember.get().getUserId()).get();
             String nowMemberId=member.getUserId();
 
-            if (membersRepository.findByUserId(nowMemberId).isEmpty()) {
+            if (memberRepository.findByUserId(nowMemberId).isEmpty()) {
                 return response.fail("존재하지 않는 회원입니다.", HttpStatus.BAD_REQUEST);
             }
             else{
@@ -178,20 +177,20 @@ public class MemberService implements UserDetailsService {
 
     // NOTE : 회원가입 아이디 중복체크
     @Transactional
-    public boolean validateDuplicateMember(MembersSaveRequestDto membersDto){
-        return membersRepository.existsByUserId(membersDto.getUserId());
+    public boolean validateDuplicateMember(MemberSaveRequestDto membersDto){
+        return memberRepository.existsByUserId(membersDto.getUserId());
     }
 
     // NOTE : 회원 탈퇴
     @Transactional
     public ResponseEntity<? extends Object> deleteMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<Members> principal = Optional.empty();
+        Optional<Member> principal = Optional.empty();
         if (authentication.getPrincipal() instanceof Optional) {
-            principal = (Optional<Members>) authentication.getPrincipal();
+            principal = (Optional<Member>) authentication.getPrincipal();
         }
-        Members nowMember = membersRepository.findByUserId(principal.get().getUserId()).get();
-        Optional<Members> member=membersRepository.findByUserId(principal.get().getUserId());
+        Member nowMember = memberRepository.findByUserId(principal.get().getUserId()).get();
+        Optional<Member> member= memberRepository.findByUserId(principal.get().getUserId());
 
         try {
             if (!member.isPresent()){
@@ -199,7 +198,7 @@ public class MemberService implements UserDetailsService {
             }
             else{
                 member.ifPresent(selectUser -> {
-                    membersRepository.delete(selectUser);
+                    memberRepository.delete(selectUser);
                 });
                 return response.success(Collections.EMPTY_LIST,"회원탈퇴 완료되었습니다.",HttpStatus.OK);
             }

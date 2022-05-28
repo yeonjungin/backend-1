@@ -7,8 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import whoami.core.domain.follow.Follow;
 import whoami.core.domain.follow.FollowRepository;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
 import whoami.core.dto.follow.FollowRequestDto;
 import whoami.core.dto.follow.FollowResponseDto;
 import whoami.core.dto.follow.UnfollowRequestDto;
@@ -22,14 +22,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FollowService {
     private final FollowRepository followRepository;
-    private final MembersRepository membersRepository;
+    private final MemberRepository memberRepository;
     private final Response response;
 
     @Transactional
     public ResponseEntity<?> follow(FollowRequestDto requestDto) {
 
-        Optional<Members> followerId= membersRepository.findByUserId(requestDto.getFollowerId()); // 팔로워 (구독 당하는 사용자)
-        Optional<Members> followingId = (Optional<Members>) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 로그인한 유저의 정보를 가져옴
+        Optional<Member> followerId= memberRepository.findByUserId(requestDto.getFollowerId()); // 팔로워 (구독 당하는 사용자)
+        Optional<Member> followingId = (Optional<Member>) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 로그인한 유저의 정보를 가져옴
 
         try{
             Optional<Follow> follows = followRepository.findByFollowerIdAndFollowingId(followerId.get().getMemberId(), followingId.get().getMemberId());
@@ -49,8 +49,8 @@ public class FollowService {
 
     @Transactional
     public ResponseEntity<?> unfollow(UnfollowRequestDto requestDto) {
-        Optional<Members> followerId= membersRepository.findByUserId(requestDto.getFollowerId());
-        Optional<Members> followingId = (Optional<Members>) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 로그인한 유저의 정보를 가져옴
+        Optional<Member> followerId= memberRepository.findByUserId(requestDto.getFollowerId());
+        Optional<Member> followingId = (Optional<Member>) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); // 로그인한 유저의 정보를 가져옴
         Optional<Follow> follows = followRepository.findByFollowerIdAndFollowingId(followerId.get().getMemberId(), followingId.get().getMemberId());
 
         try {

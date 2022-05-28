@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
-import whoami.core.service.RedisService;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +22,7 @@ import java.util.*;
 // NOTE : JWT를 생성하고 검증하는 컴포넌트
 public class JwtTokenProvider {
     private String secretKey = "secret";
-    private final MembersRepository membersRepository;
+    private final MemberRepository memberRepository;
 
     // FIXME : 토큰 유효시간 30분 -> 나중에 10분으로 바꿔야함.
     private final long access_tokenValidTime = 1000L * 60 * 3;  // 1000L * 60 * 30; // 30분
@@ -74,7 +73,7 @@ public class JwtTokenProvider {
         if (this.getUserPk(token) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
-        Optional<Members> member = membersRepository.findByUserId(this.getUserPk(token));
+        Optional<Member> member = memberRepository.findByUserId(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(member,"",member.get().getAuthorities());
     }
 
@@ -129,7 +128,7 @@ public class JwtTokenProvider {
 
     // NOTE : Email로 권한 정보 가져오기
     public String getRoles(String userId) {
-        return membersRepository.findByUserId(userId).get().getRole();
+        return memberRepository.findByUserId(userId).get().getRole();
     }
 }
 
