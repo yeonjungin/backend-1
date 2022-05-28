@@ -79,7 +79,6 @@ public class AwsS3Service {
             return response.fail("삭제할 사진이 없습니다.",HttpStatus.BAD_REQUEST);
         }
         try{
-            System.out.println(member.getProfile()+"hello");
             deleteS3(member.getProfile());
             membersUpdateUrl(null,member);
             return response.success(Collections.EMPTY_LIST,"프로필 사진 삭제가 완료되었습니다.",HttpStatus.OK);
