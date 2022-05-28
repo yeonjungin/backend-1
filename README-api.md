@@ -157,10 +157,10 @@ PATCH :/users/profile
 
 2) Body
 
-| Parameter |  Type  | Description | Content Type     |
-|-----------|:------:|-----------|------------------|
+| Parameter |  Type  | Description | Content Type    |
+|-----------|:------:|-----------|-----------------|
 | userId | String | 회원 아이디    | application/json |
-| profile |  File  | 프로필 사진 파일 | image/jpeg |
+| profile |  File  | 프로필 사진 파일 | image/jpg |
 
 #### 1.8.3. Response
 | Parameter  |  Type  | Description |
