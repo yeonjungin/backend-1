@@ -9,27 +9,25 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import whoami.core.service.AwsS3Service;
-import whoami.core.domain.members.Members;
-import whoami.core.dto.members.*;
+import whoami.core.domain.member.Member;
+import whoami.core.dto.member.*;
 import whoami.core.error.Helper;
 import whoami.core.error.Response;
 import whoami.core.service.MemberService;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class MembersController {
+public class MemberController {
     private final MemberService memberService;
     private final Response response;
     private final AwsS3Service s3Uploader;
 
     // NOTE : 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<?> joinMember(@RequestBody MembersSaveRequestDto requestDto, Errors errors) {
+    public ResponseEntity<?> joinMember(@RequestBody MemberSaveRequestDto requestDto, Errors errors) {
         if (errors.hasErrors()) {
             return response.invalidFields(Helper.refineErrors(errors));
         }
@@ -38,7 +36,7 @@ public class MembersController {
 
     // NOTE : 회원 정보 수정
     @PatchMapping("/users/update")
-    public ResponseEntity<?> updateMember(@RequestBody MembersUpdateRequestDto requestDto,Errors errors){
+    public ResponseEntity<?> updateMember(@RequestBody MemberUpdateRequestDto requestDto, Errors errors){
         if (errors.hasErrors()){
             return response.invalidFields(Helper.refineErrors(errors));
         }
@@ -109,7 +107,7 @@ public class MembersController {
     // FIXME : admin : 회원 전체 리스트 조회
     @GetMapping("/admin/allMember") // 회원 조회기능
     public String list(Model model){
-        List<Members> members = memberService.listMembers(); // member를 다 가져올 수 있음
+        List<Member> members = memberService.listMembers(); // member를 다 가져올 수 있음
         model.addAttribute("members", members);
         return "members/memberList"; // FIXME : Return 페이지
     }

@@ -1,4 +1,4 @@
-package whoami.core.domain.members;
+package whoami.core.domain.member;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,8 +13,8 @@ import java.util.Collection;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "userId")
-@Table(name="members")
-public class Members implements UserDetails {
+@Table(name="member")
+public class Member implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="member_id")
@@ -48,7 +48,7 @@ public class Members implements UserDetails {
     private String profile;
 
     @Builder
-    public Members(String userId, String password, String name, String registryNum, String phoneNum, String email, boolean isReceiveNotification, String role, String profile) {
+    public Member(String userId, String password, String name, String registryNum, String phoneNum, String email, boolean isReceiveNotification, String role, String profile) {
         this.userId = userId;
         this.password = password;
         this.name = name;

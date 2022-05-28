@@ -1,4 +1,4 @@
-package whoami.core.dto.members;
+package whoami.core.dto.member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

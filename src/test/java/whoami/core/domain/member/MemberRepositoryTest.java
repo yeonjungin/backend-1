@@ -1,4 +1,4 @@
-package whoami.core.domain.members;
+package whoami.core.domain.member;
 
 import org.junit.After;
 import org.junit.Test;
@@ -13,13 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MembersRepositoryTest {
+public class MemberRepositoryTest {
     @Autowired
-    MembersRepository membersRepository;
+    MemberRepository memberRepository;
 
     @After
     public void cleanup(){
-        membersRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -34,7 +34,7 @@ public class MembersRepositoryTest {
         boolean isReceiveNotification=true;
         String role= Role.USER.getValue();
         String profile="1.jpg";
-        membersRepository.save(Members.builder()
+        memberRepository.save(Member.builder()
                 .userId(userId)
                 .password(password)
                 .name(name)
@@ -47,12 +47,12 @@ public class MembersRepositoryTest {
                 .build());
 
         // NOTE : when
-        List<Members> membersList=membersRepository.findAll();
+        List<Member> memberList = memberRepository.findAll();
 
         // NOTE : then
-        Members members=membersList.get(0);
-        assertThat(members.getUserId()).isEqualTo(userId);
-        assertThat(members.getEmail()).isEqualTo(email);
-        assertThat(members.getName()).isEqualTo(name);
+        Member member = memberList.get(0);
+        assertThat(member.getUserId()).isEqualTo(userId);
+        assertThat(member.getEmail()).isEqualTo(email);
+        assertThat(member.getName()).isEqualTo(name);
     }
 }

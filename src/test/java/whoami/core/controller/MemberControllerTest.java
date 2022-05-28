@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import whoami.core.domain.Role;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
-import whoami.core.dto.members.MembersSaveRequestDto;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
+import whoami.core.dto.member.MemberSaveRequestDto;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class MembersControllerTest {
+public class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -44,7 +44,7 @@ public class MembersControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private MembersRepository membersRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     WebApplicationContext wac;
@@ -54,13 +54,13 @@ public class MembersControllerTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac)
                 .apply(springSecurity())
                 .build();
-        Members members = new Members("yeon1", "1111", "yeon", "111-111", "11111", "111@", true, "USER", "1.jpg");
-        membersRepository.save(members);
+        Member member = new Member("yeon1", "1111", "yeon", "111-111", "11111", "111@", true, "USER", "1.jpg");
+        memberRepository.save(member);
     }
 
     @After
     public void tearDown() throws Exception {
-        membersRepository.deleteAll();
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -81,7 +81,7 @@ public class MembersControllerTest {
         boolean isReceiveNotification = true;
         String role = Role.USER.getValue();
         String profile = "2.jpg";
-        MembersSaveRequestDto requestDto = MembersSaveRequestDto.builder()
+        MemberSaveRequestDto requestDto = MemberSaveRequestDto.builder()
                 .userId(userId)
                 .password(password)
                 .name(name)
@@ -100,7 +100,7 @@ public class MembersControllerTest {
                         .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
         // then
-        List<Members> all = membersRepository.findAll();
+        List<Member> all = memberRepository.findAll();
         assertThat(all.get(1).getUserId()).isEqualTo(userId);
 
     }

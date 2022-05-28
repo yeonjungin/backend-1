@@ -1,15 +1,15 @@
-package whoami.core.dto.members;
+package whoami.core.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class LoginResponseDto {
+public class ReissueTokenResponseDto {
     private final String accessToken;
     private final String refreshToken;
 
     @Builder
-    public LoginResponseDto(String accessToken, String refreshToken) {
+    public ReissueTokenResponseDto(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken=refreshToken;
     }

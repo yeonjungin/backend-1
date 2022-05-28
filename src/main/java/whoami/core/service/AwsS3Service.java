@@ -12,10 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
-import whoami.core.dto.members.ProfileUploadRequestDto;
-import whoami.core.dto.members.ProfileUploadResponseDto;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
+import whoami.core.dto.member.ProfileUploadRequestDto;
+import whoami.core.dto.member.ProfileUploadResponseDto;
 import whoami.core.error.Response;
 
 import javax.transaction.Transactional;
@@ -31,7 +31,7 @@ import java.util.UUID;
 @Component
 public class AwsS3Service {
     private final AmazonS3Client amazonS3Client;
-    private final MembersRepository membersRepository;
+    private final MemberRepository memberRepository;
     private final Response response;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -41,7 +41,7 @@ public class AwsS3Service {
     public ResponseEntity<? extends Object> profileUpload(ProfileUploadRequestDto requestDto,MultipartFile multipartFile){
         String userId=requestDto.getUserId();
         String dirName=requestDto.getDirName();
-        Optional<Members> members=membersRepository.findByUserId(userId);
+        Optional<Member> members= memberRepository.findByUserId(userId);
 
         if (userId==null || multipartFile==null){
             return response.fail("입력값이 비어있습니다.",HttpStatus.BAD_REQUEST);
@@ -68,17 +68,18 @@ public class AwsS3Service {
     @Transactional
     public ResponseEntity<? extends Object> profileDelete(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<Members> nowMember = Optional.empty();
+        Optional<Member> nowMember = Optional.empty();
         if (authentication.getPrincipal() instanceof Optional) {
-            nowMember = (Optional<Members>) authentication.getPrincipal();
+            nowMember = (Optional<Member>) authentication.getPrincipal();
         }
-        Members member = membersRepository.findByUserId(nowMember.get().getUserId()).get();
+        Member member = memberRepository.findByUserId(nowMember.get().getUserId()).get();
         String nowMemberId=member.getUserId();
 
         if (member.getProfile()==null){
             return response.fail("삭제할 사진이 없습니다.",HttpStatus.BAD_REQUEST);
         }
         try{
+            System.out.println(member.getProfile()+"hello");
             deleteS3(member.getProfile());
             membersUpdateUrl(null,member);
             return response.success(Collections.EMPTY_LIST,"프로필 사진 삭제가 완료되었습니다.",HttpStatus.OK);
@@ -88,15 +89,15 @@ public class AwsS3Service {
     }
 
     // NOTE : url -> 회원정보 DB에 넣기
-    private void membersUpdateUrl(String url,Members members){
-        members.update(url);
+    private void membersUpdateUrl(String url, Member member){
+        member.update(url);
     }
 
     // NOTE : S3로 파일 업로드하기
-    private String upload(File uploadFile, String dirName,Members members) {
+    private String upload(File uploadFile, String dirName, Member member) {
         String fileName = dirName + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
-        membersUpdateUrl(fileName,members);
+        membersUpdateUrl(fileName, member);
         removeNewFile(uploadFile);
         return uploadImageUrl;
     }
@@ -129,6 +130,9 @@ public class AwsS3Service {
     }
 
     private void deleteS3(String source) {
-        amazonS3Client.deleteObject(bucket, source);
+        boolean isExistObject = amazonS3Client.doesObjectExist(bucket, source);
+        if (isExistObject == true) {
+            amazonS3Client.deleteObject(bucket, source);
+        }
     }
 }
