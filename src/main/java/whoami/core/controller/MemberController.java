@@ -104,14 +104,6 @@ public class MemberController {
         return memberService.logout(requestDto);
     }
 
-    // FIXME : admin : 회원 전체 리스트 조회
-    @GetMapping("/admin/allMember") // 회원 조회기능
-    public String list(Model model){
-        List<Member> members = memberService.listMembers(); // member를 다 가져올 수 있음
-        model.addAttribute("members", members);
-        return "members/memberList"; // FIXME : Return 페이지
-    }
-
 }
 
 
