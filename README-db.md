@@ -42,7 +42,7 @@ CREATE TABLE follow (
     PRIMARY KEY (follow_id)
     KEY `FKnoiuejlng8kw7wvqts9f85mfh` (follower_id),
     KEY `FKqpcj9r2eswvxy3asumv07prr1` (following_id),
-    CONSTRAINT `FKnoiuejlng8kw7wvqts9f85mfh` FOREIGN KEY (follower_id) REFERENCES member (member_id) ON DELETE NO ACTION,
+    CONSTRAINT `FKnoiuejlng8kw7wvqts9f85mfh` FOREIGN KEY (follower_id) REFERENCES member (member_id) ON DELETE CASCADE ON UPDATE CASCADE ,
     CONSTRAINT `FKqpcj9r2eswvxy3asumv07prr1` FOREIGN KEY (following_id) REFERENCES member (member_id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 ```
