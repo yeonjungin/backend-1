@@ -1,4 +1,4 @@
-package whoami.core.dto.members;
+package whoami.core.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,11 +8,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class LogoutRequestDto {
+public class ReissueTokenRequestDto {
+    String accessToken;
     String refreshToken;
 
     @Builder
-    public LogoutRequestDto(String refreshToken) {
+    public ReissueTokenRequestDto(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 }

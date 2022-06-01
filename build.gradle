@@ -36,10 +36,14 @@ dependencies {
 	annotationProcessor('org.projectlombok:lombok')
 	testAnnotationProcessor('org.projectlombok:lombok')
 	// NOTE : JPA - MySQL 연동
-   implementation 'mysql:mysql-connector-java'
-   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+   	implementation 'mysql:mysql-connector-java'
+   	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	// NOTE : redis 설정값
 	implementation "org.springframework.boot:spring-boot-starter-data-redis"
+
+	// NOTE : S3 스토리지
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {

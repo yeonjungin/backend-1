@@ -8,9 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
-import whoami.core.domain.members.Members;
-import whoami.core.domain.members.MembersRepository;
-import whoami.core.service.RedisService;
+import whoami.core.domain.member.Member;
+import whoami.core.domain.member.MemberRepository;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -20,14 +19,14 @@ import java.util.*;
 @RequiredArgsConstructor
 @Component
 // NOTE : JWT를 생성하고 검증하는 컴포넌트
+// NOTE : JWT를 생성하고 검증하는 컴포넌트
 public class JwtTokenProvider {
     private String secretKey = "secret";
-    private final MembersRepository membersRepository;
-    private final RedisService redisService;
+    private final MemberRepository memberRepository;
 
     // FIXME : 토큰 유효시간 30분 -> 나중에 10분으로 바꿔야함.
-    private final long access_tokenValidTime = 1000L * 60 * 30;  // 1000L * 60 * 30; // 30분
-    private final long refresh_tokenValidTime = 1000L * 60 * 60 ; // 1000 * 60 * 60 * 14; // 2주
+    private final long access_tokenValidTime = 1000L * 60 * 3;  // 1000L * 60 * 30; // 30분
+    private final long refresh_tokenValidTime = 1000L * 60 * 5 ; // 1000 * 60 * 60 * 14; // 2주
 
     // NOTE : 객체 초기화, secretKey를 Base64로 인코딩한다.
     @PostConstruct
@@ -71,27 +70,26 @@ public class JwtTokenProvider {
 
     // NOTE : JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
-        System.out.println("사용자 아이디 :"+ this.getUserPk(token) + "token : " + token);
-        Optional<Members> member = membersRepository.findByUserId(this.getUserPk(token));
+        if (this.getUserPk(token) == null) {
+            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        }
+        Optional<Member> member = memberRepository.findByUserId(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(member,"",member.get().getAuthorities());
     }
 
 
     // NOTE : 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        String value = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return value;
     }
 
     public String resolveAccessToken(HttpServletRequest request) {
-        System.out.println("resolveAccessToken : " + request.getHeader("accessToken"));
-        String token = request.getHeader("accessToken");
-        return token;
-
+        return request.getHeader("accessToken");
     }
 
     // NOTE : Request의 Header에서 RefreshToken 값을 가져옵니다. "authorization" : "token'
     public String resolveRefreshToken(HttpServletRequest request) {
-        System.out.println("resolveRefreshToken : " + request.getHeader("refreshToken"));
         String token=request.getHeader("refreshToken");
         return token;
     }
@@ -105,13 +103,17 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    public boolean validateRefreshToken(String jwtToken) {
-        return validateToken(jwtToken);
+
+    // NOTE : Token 남은 유효시간 (로그아웃을 위해)
+    public Long getExpiration(String token) {
+        Date expiration = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration();
+        // 현재 시간
+        Long now = new Date().getTime();
+        return (expiration.getTime() - now);
     }
 
-    // NOTE :  RefreshToken 존재유무 확인
-    public boolean existsRefreshToken(String refreshToken) {
-        return redisService.getValues(refreshToken) != null;
+    public boolean validateRefreshToken(String jwtToken) {
+        return validateToken(jwtToken);
     }
 
     // NOTE : 어세스 토큰 헤더 설정
@@ -126,7 +128,7 @@ public class JwtTokenProvider {
 
     // NOTE : Email로 권한 정보 가져오기
     public String getRoles(String userId) {
-        return membersRepository.findByUserId(userId).get().getRole();
+        return memberRepository.findByUserId(userId).get().getRole();
     }
 }
 

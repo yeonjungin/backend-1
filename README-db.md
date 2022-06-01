@@ -24,6 +24,14 @@ CREATE TABLE member (
 INSERT INTO member (user_id, password, name, registry_num, phone_num, email) 
 VALUES ('id','password','name','010103','01011112222','example@gmail.com');
 ```
+### 토큰 테이블
+```sql
+CREATE TABLE token (
+id bigint(10) NOT NULL AUTO_INCREMENT,
+token varchar(200) NOT NULL,
+PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+```
 
 ### 팔로우 테이블
 ```sql
@@ -32,7 +40,11 @@ CREATE TABLE follow (
     follower_id bigint(10) NOT NULL,
     following_id bigint(10) NOT NULL,
     PRIMARY KEY (follow_id)
-);
+    KEY `FKnoiuejlng8kw7wvqts9f85mfh` (follower_id),
+    KEY `FKqpcj9r2eswvxy3asumv07prr1` (following_id),
+    CONSTRAINT `FKnoiuejlng8kw7wvqts9f85mfh` FOREIGN KEY (follower_id) REFERENCES member (member_id) ON DELETE CASCADE ON UPDATE CASCADE ,
+    CONSTRAINT `FKqpcj9r2eswvxy3asumv07prr1` FOREIGN KEY (following_id) REFERENCES member (member_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 ```
 
 ### 방명록 테이블

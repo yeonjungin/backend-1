@@ -5,18 +5,18 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 public class RedisService {
     private final RedisTemplate redisTemplate;
 
-    // NOTE : 키-벨류 설정
-    public void setValues(String token, String userId){
-        ValueOperations<String, String> values = redisTemplate.opsForValue();
-        System.out.println("setValues : " + token + userId);
-        values.set(token, userId, Duration.ofMinutes(3));  // 3분 뒤 메모리에서 삭제된다.
+    // NOTE : 키-벨류 설정 (토큰-아이디)
+    public void setValues(String token, String userId, Long minutes){
+        redisTemplate.opsForValue().set(token,userId);
+        redisTemplate.expire(token, minutes, TimeUnit.MILLISECONDS);
+        System.out.println("setValues : " + token + getValues(token));
     }
 
     // NOTE : 키값으로 벨류 가져오기
@@ -31,4 +31,6 @@ public class RedisService {
         System.out.println("delvalues : "+ token);
         redisTemplate.delete(token);
     }
+
+
 }

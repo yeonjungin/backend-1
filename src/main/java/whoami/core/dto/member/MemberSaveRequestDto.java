@@ -1,17 +1,16 @@
-package whoami.core.dto.members;
+package whoami.core.dto.member;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import whoami.core.domain.Role;
-import whoami.core.domain.members.Members;
+import whoami.core.domain.member.Member;
 
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class MembersSaveRequestDto {
+public class MemberSaveRequestDto {
     private String userId;
     private String password;
     private String name;
@@ -23,7 +22,7 @@ public class MembersSaveRequestDto {
     private String profile;
 
     @Builder
-    public MembersSaveRequestDto(String userId, String password, String name, String registryNum, String phoneNum, String email, boolean isReceiveNotification, String role, String profile) {
+    public MemberSaveRequestDto(String userId, String password, String name, String registryNum, String phoneNum, String email, boolean isReceiveNotification, String role, String profile) {
         this.userId = userId;
         this.password = password;
         this.name = name;
@@ -35,8 +34,8 @@ public class MembersSaveRequestDto {
         this.profile = profile;
     }
 
-    public Members toEntity(){
-        return Members.builder()
+    public Member toEntity(){
+        return Member.builder()
                 .userId(userId)
                 .password(password)
                 .name(name)
@@ -44,7 +43,7 @@ public class MembersSaveRequestDto {
                 .phoneNum(phoneNum)
                 .email(email)
                 .isReceiveNotification(isReceiveNotification)
-                .role(Role.USER.getValue())
+                .role(role) // FIXME
                 .profile(profile)
                 .build();
     }
