@@ -1,8 +1,4 @@
 package whoami.core.dto.follow;
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 import lombok.Builder;
 import lombok.Getter;
 

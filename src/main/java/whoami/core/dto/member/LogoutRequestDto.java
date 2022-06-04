@@ -1,8 +1,4 @@
 package whoami.core.dto.member;
-<<<<<<< HEAD:src/main/java/whoami/core/dto/member/LogoutRequestDto.java
-=======
-
->>>>>>> upstream/master:src/main/java/whoami/core/dto/members/LogoutRequestDto.java
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

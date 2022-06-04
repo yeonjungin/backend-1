@@ -1,8 +1,4 @@
 package whoami.core.config;
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;

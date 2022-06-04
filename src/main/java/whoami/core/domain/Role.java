@@ -8,9 +8,5 @@ public enum Role {
     // FIXME : 이대로 고치기
     USER("USER"),
     ADMIN("ADMIN");
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
     private final String value;
 }
