@@ -1,13 +1,10 @@
 package whoami.core.domain.member;
-
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
-
 
 @Getter
 @Entity
@@ -20,7 +17,7 @@ public class Member implements UserDetails {
     @Column(name="member_id")
     private Long memberId;
 
-    @Column(nullable = false, unique = true,name="user_id")
+    @Column(nullable = false, unique = true, name="user_id")
     private String userId;
 
     @Column(nullable = false)
@@ -66,7 +63,6 @@ public class Member implements UserDetails {
         this.email=email;
         this.isReceiveNotification=isReceiveNotification;
     }
-
     public void update(String profile){
         this.profile=profile;
     }

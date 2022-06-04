@@ -1,5 +1,4 @@
 package whoami.core.security;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -10,7 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import whoami.core.domain.member.Member;
 import whoami.core.domain.member.MemberRepository;
-
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +16,6 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Component
-// NOTE : JWT를 생성하고 검증하는 컴포넌트
 // NOTE : JWT를 생성하고 검증하는 컴포넌트
 public class JwtTokenProvider {
     private String secretKey = "secret";

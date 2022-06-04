@@ -47,6 +47,58 @@ CREATE TABLE follow (
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 ```
 
+### 답글 테이블
+```sql
+create table answer(
+answer_id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE, 
+contents text, 
+created_at datetime,
+updated_at datetime, 
+member_id BIGINT,
+FOREIGN KEY (member_id) REFERENCES member(member_id) ON UPDATE CASCADE
+);
+```
+
+### 답글 좋아요 테이블
+```sql
+create table like_answer(
+like_id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE, 
+member_id BIGINT,
+answer_id BIGINT,
+FOREIGN KEY (member_id) REFERENCES member(member_id) ON UPDATE CASCADE,
+FOREIGN KEY (answer_id) REFERENCES answer(answer_id) ON UPDATE CASCADE
+);
+```
+
+
+### 댓글 테이블
+```sql
+create table comment(
+comment_id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE, 
+contents text, 
+created_at datetime,
+updated_at datetime, 
+member_id BIGINT,
+answer_id BIGINT,
+upper_comment_id BIGINT DEFAULT NULL,
+FOREIGN KEY (member_id) REFERENCES member(member_id) ON UPDATE CASCADE,
+FOREIGN KEY (answer_id) REFERENCES answer(answer_id) ON UPDATE CASCADE
+);
+```
+
+
+### 댓글 좋아요 테이블
+```sql
+create table like_answer(
+like_id BIGINT PRIMARY KEY AUTO_INCREMENT NOT NULL UNIQUE, 
+member_id BIGINT,
+answer_id BIGINT,
+FOREIGN KEY (member_id) REFERENCES member(member_id) ON UPDATE CASCADE,
+FOREIGN KEY (answer_id) REFERENCES answer(answer_id) ON UPDATE CASCADE
+);
+```
+
+
 ### 방명록 테이블
  
 boolean 타입일 경우 default 을 지정할 경우 0 (false) 또는 1 (true) 로 지정해야 한다.

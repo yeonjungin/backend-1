@@ -1,11 +1,9 @@
 package whoami.core.dto.member;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import whoami.core.domain.member.Member;
-
 
 @Getter
 @Setter

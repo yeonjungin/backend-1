@@ -1,5 +1,8 @@
 package whoami.core.dto.member;
+<<<<<<< HEAD:src/main/java/whoami/core/dto/member/LoginResponseDto.java
+=======
 
+>>>>>>> upstream/master:src/main/java/whoami/core/dto/members/LoginResponseDto.java
 import lombok.Builder;
 import lombok.Getter;
 

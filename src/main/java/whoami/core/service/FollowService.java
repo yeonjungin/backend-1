@@ -1,5 +1,4 @@
 package whoami.core.service;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +12,6 @@ import whoami.core.dto.follow.FollowRequestDto;
 import whoami.core.dto.follow.FollowResponseDto;
 import whoami.core.dto.follow.UnfollowRequestDto;
 import whoami.core.error.Response;
-
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.Optional;

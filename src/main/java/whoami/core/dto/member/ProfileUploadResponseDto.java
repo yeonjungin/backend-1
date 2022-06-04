@@ -1,5 +1,8 @@
 package whoami.core.dto.member;
+<<<<<<< HEAD
+=======
 
+>>>>>>> upstream/master
 import lombok.Builder;
 import lombok.Getter;
 

@@ -1,9 +1,14 @@
 package whoami.core.domain.follow;
+<<<<<<< HEAD
+import lombok.*;
+import whoami.core.domain.member.Member;
+=======
 
 
 import lombok.*;
 import whoami.core.domain.member.Member;
 
+>>>>>>> upstream/master
 import javax.persistence.*;
 
 @Getter
@@ -20,7 +25,11 @@ public class Follow {
     @ManyToOne
     private Member followerId;
 
+<<<<<<< HEAD
+    @JoinColumn(name="following_id") // 팔로잉 (구독 하는 사용자)
+=======
     @JoinColumn(name="following_id") // 팔로잉 (구독하는 사용자)
+>>>>>>> upstream/master
     @ManyToOne
     private Member followingId;
 

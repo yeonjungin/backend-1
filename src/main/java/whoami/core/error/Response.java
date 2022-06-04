@@ -1,18 +1,15 @@
 package whoami.core.error;
-
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
 @Component
 public class Response {
-
     @Getter
     @Builder
     private static class Body {
