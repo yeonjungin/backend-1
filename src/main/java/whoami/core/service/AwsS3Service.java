@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +41,8 @@ public class AwsS3Service {
         String userId=requestDto.getUserId();
         String dirName=requestDto.getDirName();
         Optional<Member> members= memberRepository.findByUserId(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Member> loginUser = (Optional<Member>) authentication.getPrincipal();
 
         if (userId==null || multipartFile==null){
             return response.fail("입력값이 비어있습니다.",HttpStatus.BAD_REQUEST);
@@ -48,7 +51,9 @@ public class AwsS3Service {
         if (members.isEmpty()){
             return response.fail("존재하지 않는 회원입니다.",HttpStatus.BAD_REQUEST);
         }
-
+        if (!Objects.equals(members.get().getMemberId(), loginUser.get().getMemberId())){
+            return response.fail("현재 로그인중인 유저의 접근이 아닙니다.",HttpStatus.BAD_REQUEST);
+        }
         try{
             if (members.get().getProfile()!=null){ // NOTE : 프로필 수정하기
                 deleteS3(members.get().getProfile());
@@ -78,6 +83,7 @@ public class AwsS3Service {
         if (member.getProfile()==null){
             return response.fail("삭제할 사진이 없습니다.",HttpStatus.BAD_REQUEST);
         }
+
         try{
             deleteS3(member.getProfile());
             membersUpdateUrl(null,member);
