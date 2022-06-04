@@ -1,8 +1,6 @@
 package whoami.core.dto.follow;
-
 import lombok.*;
 import lombok.Builder;
-import whoami.core.domain.follow.Follow;
 
 @Getter
 @Setter
@@ -14,5 +12,4 @@ public class FollowRequestDto {
     public FollowRequestDto(String followerId) {
         this.followerId=followerId;
     }
-
 }

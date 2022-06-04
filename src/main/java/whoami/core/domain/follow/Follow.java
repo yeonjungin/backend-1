@@ -1,6 +1,4 @@
 package whoami.core.domain.follow;
-
-
 import lombok.*;
 import whoami.core.domain.member.Member;
 

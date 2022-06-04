@@ -1,15 +1,12 @@
 package whoami.core.controller;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import whoami.core.service.AwsS3Service;
-import whoami.core.domain.member.Member;
 import whoami.core.dto.member.*;
 import whoami.core.error.Helper;
 import whoami.core.error.Response;
@@ -102,7 +99,6 @@ public class MemberController {
         }
         return memberService.logout(requestDto);
     }
-
 }
 
 

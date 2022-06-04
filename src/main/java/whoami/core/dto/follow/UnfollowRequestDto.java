@@ -1,5 +1,4 @@
 package whoami.core.dto.follow;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

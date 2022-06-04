@@ -1,5 +1,4 @@
 package whoami.core.service;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +19,6 @@ import whoami.core.domain.member.MemberRepository;
 import whoami.core.dto.member.*;
 import whoami.core.error.Response;
 import whoami.core.security.JwtTokenProvider;
-
 import java.util.*;
 
 @Service
@@ -63,7 +61,6 @@ public class MemberService implements UserDetailsService {
     @Transactional
     public ResponseEntity<?> loginUser(LoginRequestDto requestDto) {
         UsernamePasswordAuthenticationToken authenticationToken = requestDto.toAuthentication();
-
         Optional<Member> members = memberRepository.findByUserId(requestDto.getUserId());
         if (memberRepository.findByUserId(requestDto.getUserId()).isEmpty()){
             return response.fail("존재하지 않는 아이디입니다.",HttpStatus.UNAUTHORIZED);
@@ -137,8 +134,7 @@ public class MemberService implements UserDetailsService {
     // NOTE : 회원 조회
     @Transactional
     public Member findById(Long id){
-        Member entity= memberRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 회원입니다. id="+id));
+        Member entity= memberRepository.findById(id).orElseThrow(()->new IllegalArgumentException("존재하지 않는 회원입니다. id="+id));
         return entity;
     }
 

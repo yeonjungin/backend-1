@@ -1,9 +1,7 @@
 package whoami.core.domain.follow;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import io.lettuce.core.dynamic.annotation.Param;
-
 import java.util.Optional;
 
 public interface FollowRepository  extends JpaRepository<Follow,Long> {

@@ -1,5 +1,4 @@
 package whoami.core.service;
-
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
@@ -17,7 +16,6 @@ import whoami.core.domain.member.MemberRepository;
 import whoami.core.dto.member.ProfileUploadRequestDto;
 import whoami.core.dto.member.ProfileUploadResponseDto;
 import whoami.core.error.Response;
-
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,6 +47,7 @@ public class AwsS3Service {
         if (userId==null || multipartFile==null){
             return response.fail("입력값이 비어있습니다.",HttpStatus.BAD_REQUEST);
         }
+
         if (members.isEmpty()){
             return response.fail("존재하지 않는 회원입니다.",HttpStatus.BAD_REQUEST);
         }
@@ -63,6 +62,7 @@ public class AwsS3Service {
             if (uploadFile.isEmpty()){
                 return response.fail("파일 변환이 올바르게 이루어지지 않았습니다.", HttpStatus.BAD_REQUEST);
             }
+
             String url = upload(uploadFile.get(), dirName,members.get());  // s3에 저장된 이미지의 주소 -> db에 넣기.
             return response.success(new ProfileUploadResponseDto(url),"프로필 사진 업로드가 완료되었습니다.",HttpStatus.CREATED);
         } catch (Exception e){

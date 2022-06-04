@@ -1,12 +1,10 @@
 package whoami.core.dto.member;
-
 import lombok.Builder;
 import lombok.Getter;
 import whoami.core.domain.member.Member;
 
 @Getter
 public class MemberResponseDto {
-
     private final String userId;
     private final String name;
     private final String email;
@@ -17,5 +15,4 @@ public class MemberResponseDto {
         this.name = entity.getName();
         this.email = entity.getEmail();
     }
-
 }
