@@ -12,6 +12,7 @@ import whoami.core.error.Helper;
 import whoami.core.error.Response;
 import whoami.core.service.MemberService;
 
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
