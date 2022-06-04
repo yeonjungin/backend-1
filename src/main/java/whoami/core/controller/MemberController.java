@@ -15,9 +15,6 @@ import whoami.core.error.Helper;
 import whoami.core.error.Response;
 import whoami.core.service.MemberService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
